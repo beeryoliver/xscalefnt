@@ -1,0 +1,71 @@
+%%% Package   : xscalefnt -- Scale the font size by a factor
+%%% Copyright : 2025 (c) Oliver Beery <beeryoliver@gmail.com>
+%%% CTAN      : <ADD CTAN LINK HERE>
+%%% Repository: https://github.com/beeryoliver/xscalefnt
+%%% License   : The LaTeX Project Public License 1.3c
+
+%%> \section{Loading the package}
+
+\NeedsTeXFormat{LaTeX2e}[2023-11-01]
+\ProvidesExplPackage{xscalefnt}{2025-11-08}{0.0.0}
+  {Scale the font size by a factor.}
+
+\msg_new:nnn { xscalefnt } { l3kernel }
+  {
+    The~ xscalefnt~ package~ could~ not~ load. \\
+    This~ package~ requires~
+    L3~ programming~ layer~ version~ 2023-11-01~ or~ newer.
+  }
+\msg_new:nnn { xscalefnt } { scalefnt }
+  { The~ xscalefnt~ package~ is~ incompatible~ with~ the~ scalefnt~ package. }
+
+\IfExplAtLeastTF { 2023-11-01 } { }
+  { \msg_critical:nn { xscalefnt } { l3kernel } }
+\hook_gput_code:nnn { package / scalefnt / before } { xscalefnt }
+  { \msg_error:nnn { xscalefnt } { scalefnt } }
+
+%%> \section{Variable}
+
+\fp_new:N \l__xscalefnt_tmp_fp
+
+%%> \section{Document command}
+
+\NewDocumentCommand \scalefont { m }
+  {
+    \mode_if_math:TF
+      { \msg_error:nn { xscalefnt } { math-mode-invalid } }
+      { \__xscalefnt_scale_font_size:n {#1} }
+  }
+\cs_new_protected:Npn \__xscalefnt_scale_font_size:n #1
+  {
+    \fp_set:Nn \l__xscalefnt_tmp_fp {#1}
+    \exp_args:Ne \__xscalefnt_scale_font_size_aux:n
+      { \fp_to_dim:n { \l__xscalefnt_tmp_fp * \dim_to_fp:n { \f@size pt } } }
+  }
+\cs_new_protected:Npn \__xscalefnt_scale_font_size_aux:n #1
+  {
+    \dim_compare:nTF { \c_zero_dim < #1 < 2048pt }
+      {
+        \fontsize {#1}
+          {
+            \fp_to_dim:n
+              { \l__xscalefnt_tmp_fp * \dim_to_fp:n { \f@baselineskip } }
+          }
+        \selectfont
+      }
+      { \msg_error:nnn { xscalefnt } { font-size-invalid } {#1} }
+  }
+
+%%> \section{Purifying text}
+
+\text_declare_purify_equivalent:Nn \scalefont { \use_none:n }
+
+%%> \section{Messages}
+
+\msg_new:nnn { xscalefnt } { math-mode-invalid }
+  { '\iow_char:N \\ scalefont'~ invalid~ in~ math~ mode~ \msg_line_context:. }
+\msg_new:nnn { xscalefnt } { font-size-invalid }
+  {
+    Invalid~ font~ size~ '#1'~ \msg_line_context:. \\
+    The~ font~ size~ must~ be~ a~ positive~ length~ and~ less~ than~ 2048pt.
+  }
