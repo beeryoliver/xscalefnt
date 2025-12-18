@@ -10,7 +10,7 @@ Scale the font size by a factor
 
 Oliver Beery
 
-Version 0.0.0\quad 8 November 2025
+Version 0.0.0\quad 18 December 2025
 
 
 \section{Introduction}
@@ -18,7 +18,8 @@ Version 0.0.0\quad 8 November 2025
 \subsection{About}
 
 The \pkg{xscalefnt} package is a redesign of the \pkg{scalefnt} package.
-The sole functionality of \pkg{xscalefnt} is to provide the \cs{scalefont} command, which scales the font size by a factor.
+The sole functionality of \pkg{xscalefnt} is to provide the \cs{scalefont}
+command, which scales the font size by a factor.
 
 \subsection{Loading the package}
 
@@ -32,38 +33,51 @@ The sole functionality of \pkg{xscalefnt} is to provide the \cs{scalefont} comma
 
 \section{Command}
 
-The syntax \meta{fp expr} has the same meaning as the argument to \cs{fpeval}, which is documented in \pkg{usrguide}.
+The syntax \meta{fp expr} has the same meaning as the argument to \cs{fpeval},
+which is documented in \pkg{usrguide}.
 
 \begin{function}{\scalefont}
   \begin{syntax}
-    \cs{scalefont}\marg{fp expr}
+    \cs{scalefont} \marg{fp expr}
   \end{syntax}
-  Scales the font size and font baselineskip by a factor equal to the result of evaluating the \meta{fp expr}.
+  Scales the font size and font baselineskip by a factor equal to the result
+  of evaluating the \meta{fp expr}.
   The new font baselineskip has no stretch and shrink components.
   Cannot be used in math mode.
-  This command is a more robust alternative to \cs{scalefont} from the \pkg{scalefnt} package.
+  This command is a more robust alternative to \cs{scalefont} from the
+  \pkg{scalefnt} package.
 \end{function}
 
 
 \section{Programming}
 
-This package uses \cs{text_declare_purify_equivalent:Nn} to make \cs{text_purify:n} correctly remove \cs{scalefont}.
+This package uses \cs{text_declare_purify_equivalent:Nn} to make
+\cs{text_purify:n} correctly remove \cs{scalefont}.
 
 
 \section{Improvements to \pkg{scalefnt}}
 
-\pkg{xscalefnt} fixes some problems with \cs{scalefont} from the \pkg{scalefnt} package:
+\pkg{xscalefnt} fixes some problems with \cs{scalefont} from the
+\pkg{scalefnt} package:
 \begin{itemize}
   \item
   \cs{scalefont}\marg{factor} incorrectly calculates the new font baselineskip.
-  It sets the font baselineskip equal to the current paragraph baselineskip \cs{baselineskip} \texttimes{} \meta{factor}.
-  This means that, if \cs{linespread} or \cs{baselinestretch} is set with a factor that is greater than \num{1}, then the factor will be incorrectly applied twice when the new \cs{baselineskip} is calculated.
-  \pkg{xscalefnt} fixes this issue by defining \cs{scalefont} such that it sets the new font baselineskip equal to the current font baselineskip \cs{f@baselineskip} \texttimes{} \meta{factor}.
+  It sets the font baselineskip equal to the current paragraph baselineskip
+  \cs{baselineskip} \texttimes{} \meta{factor}.
+  This means that, if \cs{linespread} or \cs{baselinestretch} is set with a
+  factor that is greater than \num{1}, then the factor will be incorrectly
+  applied twice when the new \cs{baselineskip} is calculated.
+  \pkg{xscalefnt} fixes this issue by defining \cs{scalefont} such that it
+  sets the new font baselineskip equal to the current font baselineskip
+  \cs{f@baselineskip} \texttimes{} \meta{factor}.
   \item
-  In \pkg{xscalefnt}, \cs{scalefont} uses more accurate floating point arithmetic when computing the new font size and font baselineskip.
-  (This also removes the stretch and shrink components, if any, of the font baselineskip, but this functionality is virtually never useful.)
+  In \pkg{xscalefnt}, \cs{scalefont} uses more accurate floating point
+  arithmetic when computing the new font size and font baselineskip.
+  (This also removes the stretch and shrink components, if any, of the font
+  baselineskip, but this functionality is virtually never useful.)
   \item
-  In \pkg{scalefnt}, \cs{scalefont} is not engine-protected using \cs{NewDocumentCommand}.
+  In \pkg{scalefnt}, \cs{scalefont} is not engine-protected using
+  \cs{NewDocumentCommand}.
   This means that it may needlessly break in certain situations.
 \end{itemize}
 
